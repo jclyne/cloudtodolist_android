@@ -205,7 +205,7 @@ public class TodoListActivity extends FragmentActivity
             accountManager.addAccount(getString(R.string.setting_account_type),
                     null, null, null, this, new AccountManagerCallback<Bundle>() {
                         @Override
-                        public void run(AccountManagerFuture result) {
+                        public void run(AccountManagerFuture<Bundle> result) {
                             if (accountManager.getAccountsByType(accountType).length > 0) {
                                 startActivity(new Intent(getBaseContext(), this.getClass()));
                             }

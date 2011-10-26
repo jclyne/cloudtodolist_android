@@ -337,14 +337,15 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
     /**
      * Helper class for building 'where' clause strings
      */
-    @SuppressWarnings({"UnusedDeclaration"})
+    @SuppressWarnings({"UnusedDeclaration","unused"})
     private class WhereStringBuilder {
         // Base where clause
         String where;
         // string to append to the base
         String append;
 
-        WhereStringBuilder() {
+  
+		WhereStringBuilder() {
             this.where = null;
             this.append = null;
         }

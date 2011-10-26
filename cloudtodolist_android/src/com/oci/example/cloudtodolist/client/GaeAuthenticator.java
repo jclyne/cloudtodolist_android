@@ -136,7 +136,7 @@ public class GaeAuthenticator implements HttpRestAuthenticator {
      */
     private String getAuthToken() throws IOException, AuthenticatorException, OperationCanceledException {
 
-        AccountManagerFuture result = accountManager.getAuthToken(
+        AccountManagerFuture<Bundle> result = accountManager.getAuthToken(
                 account, authTokenType, true, null, new Handler());
 
         Bundle bundle = (Bundle) result.getResult();
