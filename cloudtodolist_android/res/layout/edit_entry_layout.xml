@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              style="@style/edit_entry_layout"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:orientation="vertical">
+
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <TextView style="@style/todolist_label_text"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/edit_entry_title_label"/>
+
+        <EditText android:id="@+id/edit_title"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:singleLine="true"/>
+
+        <TextView style="@style/todolist_label_text"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/edit_entry_notes_label"/>
+
+        <EditText android:id="@+id/edit_notes"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:lines="5"
+                  android:gravity="top|left"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+        <Button android:id="@+id/edit_entry_apply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/apply_button"
+                android:onClick="apply"/>
+
+        <Button android:id="@+id/edit_entry_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cancel_button"
+                android:onClick="cancel"/>
+
+    </LinearLayout>
+
+</LinearLayout>

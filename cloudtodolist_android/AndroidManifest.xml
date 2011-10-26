@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.oci.example.cloudtodolist"
+          android:versionCode="1"
+          android:versionName="1.0">
+
+    <uses-sdk android:minSdkVersion="10" android:targetSdkVersion="10"/>
+
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
+    <application android:label="@string/app_name" android:icon="@drawable/icon">
+
+        <provider android:name=".provider.TodoListProvider"
+                  android:authorities="com.oci.provider.cloudtodolist"
+                  android:exported="false">
+            <grant-uri-permission android:pathPattern=".*"/>
+        </provider>
+
+        <activity android:name=".TodoListActivity"
+                  android:label="@string/todolist_activity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".TodoListEditEntryActivity"
+                  android:label="@string/edit_entry_activity">
+            <intent-filter>
+                <action android:name="android.intent.action.EDIT"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="vnd.android.cursor.item/vnd.oci.cloudtodolist.entry"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".TodoListPreferencesActivity"
+                  android:label="@string/todolist_preferences_activity"/>
+
+        <service android:name=".TodoListSyncService"
+                 android:label="TodoListSyncService">
+
+            <intent-filter>
+                <action android:name="com.oci.example.cloudtodolist.SYNC"/>
+                <action android:name="com.oci.example.cloudtodolist.FULL_SYNC"/>
+            </intent-filter>
+
+        </service>
+
+        <receiver android:name=".TodoListSyncScheduler">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

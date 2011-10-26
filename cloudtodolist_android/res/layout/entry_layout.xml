@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              style="@style/todolist_entry_layout"
+              android:orientation="horizontal"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent">
+
+    <CheckBox
+            android:id="@+id/entry_complete"
+            style="@style/todolist_entry_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <LinearLayout
+            style="@style/todolist_entry_layout"
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:longClickable="true"
+            android:focusable="false"
+            android:layout_weight="100">
+
+        <TextView
+                android:id="@+id/entry_title"
+                style="@style/todolist_entry"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"/>
+
+        <LinearLayout
+                style="@style/todolist_entry_layout"
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:id="@+id/entry_notes"
+                    style="@style/todolist_notes_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="100"
+                    android:text=""/>
+
+            <TextView
+                    android:id="@+id/entry_modified"
+                    style="@style/todolist_notes_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:text="Modified"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+            android:id="@+id/entry_status"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:paddingRight="5dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_dirty"
+            android:visibility="visible"/>
+
+
+</LinearLayout>

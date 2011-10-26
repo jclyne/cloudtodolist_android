@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component inherit-compiler-output="true">
+	<output-test url="file://$MODULE_DIR$/../out/test/cloudtodolist_android"/>
+	<exclude-output/>
+	<contentEntry url="file://$MODULE_DIR$"/>
+	<lib name="Android Compatibility Package" scope="COMPILE">
+		<srcroot url="jar://$MODULE_DIR$/libs/android-support-v4.jar!/"/>
+		<relative-module-src project-related="jar://$PROJECT_DIR$/cloudtodolist_android/libs/android-support-v4.jar!/"/>
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/cloudtodolist_android/libs/android-support-v4.jar!/"/>
+	</lib>
+</component>

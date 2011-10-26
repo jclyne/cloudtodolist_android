@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/Android 2.3.3 Platform"/>
+	<classpathentry kind="src" path="/cloudtodolist_android/src"/>
+	<classpathentry kind="src" path="/cloudtodolist_android/gen"/>
+	<classpathentry kind="lib" path="/cloudtodolist_android/libs/android-support-v4.jar" sourcepath="/cloudtodolist_android/libs/android-support-v4.jar"/>
+	<classpathentry kind="output" path="/out/production/cloudtodolist_android"/>
+</classpath>

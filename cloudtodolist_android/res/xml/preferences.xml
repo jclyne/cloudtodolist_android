@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+            android:key="@string/setting_google_account"
+            android:title="@string/setting_google_account_title"
+            android:summary="@string/setting_google_account_summary"
+            android:dialogTitle="@string/setting_google_account_dialog_title"/>
+
+    <CheckBoxPreference
+            android:key="@string/setting_offline_mode"
+            android:title="@string/setting_offline_mode_title"
+            android:summaryOn="@string/setting_offline_mode_summary_on"
+            android:summaryOff="@string/setting_offline_mode_summary_off"
+            android:defaultValue="false"
+            android:disableDependentsState="true"/>
+
+    <EditTextPreference
+            android:key="@string/setting_server_address"
+            android:title="@string/setting_server_address_title"
+            android:summary="@string/setting_server_address_summary"
+            android:dialogTitle="@string/setting_server_address_title"
+            android:defaultValue="@string/app_host_name"
+            android:dependency="@string/setting_offline_mode"/>
+
+    <CheckBoxPreference
+            android:key="@string/setting_https"
+            android:title="@string/setting_https_title"
+            android:summaryOn="@string/setting_https_summary_on"
+            android:summaryOff="@string/setting_https_summary_off"
+            android:defaultValue="true"
+            android:dependency="@string/setting_offline_mode"/>
+
+    <ListPreference
+            android:key="@string/setting_sync_interval"
+            android:title="@string/setting_sync_interval_title"
+            android:summary="@string/setting_sync_interval_summary"
+            android:entries="@array/setting_sync_interval_entries"
+            android:entryValues="@array/setting_sync_interval_entry_values"
+            android:defaultValue="@string/setting_sync_interval_default_value"
+            android:dialogTitle="@string/setting_sync_interval_dialog_title"/>
+
+
+</PreferenceScreen>

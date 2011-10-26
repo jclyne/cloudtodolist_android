@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cloud Todo List</string>
+    <string name="todolist_activity">Cloud Todo List</string>
+    <string name="todolist_preferences_activity">Cloud Todo List Preferences</string>
+    <string name="app_host_name">cloudtodolist.appspot.com</string>
+    <string name="untitled">UNTITLED</string>
+    <string name="entry_added">Entry Added</string>
+    <string name="entry_deleted">Entry Deleted</string>
+    <string name="entry_updated">Entry Updated</string>
+    <string name="sync_initiated">Syncing List Items</string>
+    <string name="sync_failed">Sync Failed, check your settings</string>
+    <string name="entry_invalid">Invalid Entry</string>
+    <string name="menu_refresh">Refresh</string>
+    <string name="menu_clear_selected">Clear Selected</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_notes_item">Notes</string>
+    <string name="menu_edit_item">Edit</string>
+    <string name="menu_delete_item">Delete</string>
+    <string name="new_entry_hint">
+        <i>Add a new entry</i>
+    </string>
+    <string name="edit_entry_activity">Edit Entry</string>
+    <string name="edit_entry_title_label">Title</string>
+    <string name="edit_entry_notes_label">Notes</string>
+    <string name="apply_button">Apply</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="empty_notes">
+        <i>None</i>
+    </string>
+    <string name="sync_update_ticker">Todo List Updated</string>
+    <string name="sync_update_text">Tap to view</string>
+    <string name="sync_invalid_credentials_ticker">Invalid Credentials</string>
+    <string name="sync_invalid_credentials_title">Invalid Username or Password</string>
+    <string name="sync_invalid_credentials_text">Tap to edit</string>
+    <string name="setting_account_type">com.google</string>
+    <string name="setting_google_account">account</string>
+    <string name="setting_google_account_title">Google Account</string>
+    <string name="setting_google_account_summary">Select account to connect with</string>
+    <string name="setting_google_account_dialog_title">Google Accounts</string>
+    <string name="setting_server_address">server_address</string>
+    <string name="setting_server_address_title">Server Address</string>
+    <string name="setting_server_address_summary">Address of Todo List Cloud Service</string>
+    <string name="setting_sync_interval">sync_frequency</string>
+    <string name="setting_sync_interval_title">Sync Frequency</string>
+    <string name="setting_sync_interval_summary">Frequency to sync todo list entries</string>
+    <string name="setting_sync_interval_dialog_title">Sync Frequence</string>
+    <string name="setting_sync_interval_default_value">900000</string>
+    <string name="setting_offline_mode">offline_mode</string>
+    <string name="setting_offline_mode_title">Offline Mode</string>
+    <string name="setting_offline_mode_summary_on">Enabled, not syncing with cloud</string>
+    <string name="setting_offline_mode_summary_off">Disabled, syncing with cloud</string>
+    <string name="setting_https">https</string>
+    <string name="setting_https_title">Use Https</string>
+    <string name="setting_https_summary_on">Enabled, network communication is encrypted</string>
+    <string name="setting_https_summary_off">Disabled, network communication is in the clear</string>
+
+
+</resources>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              style="@style/todolist_layout"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent">
+
+    <ListView android:id="@+id/todo_list"
+              style="@style/todolist_listview"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:layout_weight="1"
+              android:choiceMode="none"
+              android:drawSelectorOnTop="false"
+              android:hapticFeedbackEnabled="true"
+            />
+
+
+    <EditText android:id="@+id/new_entry"
+              style="@style/todolist_new_entry"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:singleLine="true"
+              android:hint="@string/new_entry_hint"/>
+</LinearLayout>

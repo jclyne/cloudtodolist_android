@@ -1,0 +1,19 @@
+<resources>
+    <string-array name="setting_sync_interval_entries">
+        <item>5 seconds</item>
+        <item>1 minute</item>
+        <item>5 minutes</item>
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>60 minutes</item>
+    </string-array>
+
+    <string-array name="setting_sync_interval_entry_values">
+        <item>5000</item>
+        <item>60000</item>
+        <item>300000</item>
+        <item>900000</item>
+        <item>1800000</item>
+        <item>3600000</item>
+    </string-array>
+</resources>

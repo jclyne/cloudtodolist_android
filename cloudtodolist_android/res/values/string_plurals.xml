@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="clearedEntriesDeleted">
+        <item quantity="one">Deleted 1 complete entry</item>
+        <item quantity="other">Deleted %d complete entries</item>
+    </plurals>
+
+    <plurals name="sync_update_title">
+        <item quantity="one">1 entry updated</item>
+        <item quantity="other">%d entries updated</item>
+    </plurals>
+
+</resources>
