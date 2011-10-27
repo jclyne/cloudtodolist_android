@@ -51,8 +51,9 @@ public class TodoListActivity extends FragmentActivity
     // Reference to TodoListCursorAdapter
     private TodoListCursorAdapter todoListAdapter;
     // Reference to an intenal broadcast receiver to handle connectivity events
-    private BroadcastReceiver broadcastReceiver;
-
+    private BroadcastReceiver connectivityChangeReceiver;
+    private BroadcastReceiver syncProgressReceiver;
+    
     /**
      * Called when the activity is starting
      *
@@ -71,6 +72,9 @@ public class TodoListActivity extends FragmentActivity
         // Initialize the PreferenceManager reference
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
+        // Initialize Windows Features (progress bar)
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        
         // Inflate the layout xml
         setContentView(R.layout.todolist_layout);
 
@@ -171,17 +175,33 @@ public class TodoListActivity extends FragmentActivity
         prefs.registerOnSharedPreferenceChangeListener(this);
 
         // Build a BroadcastReceiver that will update the window title based on connectivity events
-        IntentFilter broadcastFilter = new IntentFilter();
-        broadcastFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        broadcastFilter.addAction(ConnectivityManager.ACTION_BACKGROUND_DATA_SETTING_CHANGED);
-        broadcastReceiver = new BroadcastReceiver() {
+        IntentFilter connectivityChangeFilter = new IntentFilter();
+        connectivityChangeFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        connectivityChangeFilter.addAction(ConnectivityManager.ACTION_BACKGROUND_DATA_SETTING_CHANGED);
+        connectivityChangeReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 setWindowTitle();
             }
         };
-        registerReceiver(broadcastReceiver, broadcastFilter);
+        registerReceiver(connectivityChangeReceiver, connectivityChangeFilter);
 
+        // Build a BroadcastReceiver that will update the window title based on connectivity events
+        IntentFilter syncProgressFilter = new IntentFilter();
+        syncProgressFilter.addAction(TodoListSyncService.STATUS_TODOLIST_SYNC_STARTED);
+        syncProgressFilter.addAction(TodoListSyncService.STATUS_TODOLIST_SYNC_COMPLETE);
+        syncProgressReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+            	if (intent.getAction().equals(TodoListSyncService.STATUS_TODOLIST_SYNC_STARTED)){
+            		setProgressBarIndeterminateVisibility(true);
+            	} else {
+            		setProgressBarIndeterminateVisibility(false);
+            	}
+            }
+        };
+        registerReceiver(syncProgressReceiver, syncProgressFilter);
+        
         // Finally, request an intial sync
         TodoListSyncHelper.requestSync(this);
     }
@@ -221,7 +241,8 @@ public class TodoListActivity extends FragmentActivity
     @Override
     protected void onDestroy() {
         // Make sure to unregister the broadcast receiver
-        unregisterReceiver(broadcastReceiver);
+        unregisterReceiver(connectivityChangeReceiver);
+        unregisterReceiver(syncProgressReceiver);
         super.onDestroy();
     }
 

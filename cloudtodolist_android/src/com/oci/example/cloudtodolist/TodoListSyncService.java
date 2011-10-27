@@ -35,6 +35,10 @@ public class TodoListSyncService extends IntentService {
     private static final String INTENT_BASE = "com.oci.example.cloudtodolist.";
     public static final String ACTION_TODOLIST_SYNC = INTENT_BASE + "SYNC";
     public static final String ACTION_TODOLIST_FULL_SYNC = INTENT_BASE + "FULL_SYNC";
+    
+    // These are notification intents, an activity can register for a broadcast to get updates
+    public static final String STATUS_TODOLIST_SYNC_STARTED = INTENT_BASE + "SYNC_STARTED";
+    public static final String STATUS_TODOLIST_SYNC_COMPLETE = INTENT_BASE + "SYNC_COMPLETE";
 
     // ID of the sync result notification message
     private static final int SYNC_RESULT_NOTIFICATION_ID = 1;
@@ -95,6 +99,7 @@ public class TodoListSyncService extends IntentService {
                 .getLocalContentProvider();
 
         Log.d(TAG, "Service Created" + " (" + Thread.currentThread().getName() + ")");
+        sendBroadcast(new Intent(STATUS_TODOLIST_SYNC_STARTED));
     }
 
     /**
@@ -118,7 +123,9 @@ public class TodoListSyncService extends IntentService {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        client.close();
         Log.d(TAG, "Service Destroyed" + " (" + Thread.currentThread().getName() + ")");
+        sendBroadcast(new Intent(STATUS_TODOLIST_SYNC_COMPLETE));
     }
 
 

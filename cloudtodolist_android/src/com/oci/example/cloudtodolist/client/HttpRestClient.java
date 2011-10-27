@@ -16,6 +16,7 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
@@ -55,6 +56,8 @@ public class HttpRestClient {
 
     // Reference to an org.apache.http.client.HttpClient
     private final DefaultHttpClient client;
+    // Reference to the client connection Manager
+    private ClientConnectionManager connManager;
     // Scheme of the service URI (http/https)
     private final String scheme;
     // Authority (hostname) of the service URI (xyxyxy.appspot.com)
@@ -237,11 +240,16 @@ public class HttpRestClient {
                 SSLCertificateSocketFactory.getHttpSocketFactory(
                         SOCKET_OPERATION_TIMEOUT, sessionCache), 443));
 
-        ClientConnectionManager manager = new ThreadSafeClientConnManager(params, schemeRegistry);
+        connManager = new SingleClientConnManager(params, schemeRegistry);
 
-        this.client = new DefaultHttpClient(manager, params);
+        this.client = new DefaultHttpClient(connManager, params);
     }
 
+	public void close() {
+		// Shutdown the connection manager
+		connManager.shutdown(); 
+	}
+	
     /**
      * @return apache HttpClient wrapped by this class
      */
