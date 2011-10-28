@@ -35,7 +35,8 @@ public class TodoListEditEntryActivity extends Activity {
      *
      * @param savedInstanceState saved instance state
      */
-    public void onCreate(Bundle savedInstanceState) {
+    @Override
+	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_entry_layout);
 

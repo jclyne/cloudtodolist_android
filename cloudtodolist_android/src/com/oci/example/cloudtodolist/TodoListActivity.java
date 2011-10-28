@@ -148,7 +148,8 @@ public class TodoListActivity extends FragmentActivity
          */
         newEntryBox = (EditText) findViewById(R.id.new_entry);
         newEntryBox.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
+            @Override
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                         (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     onNewEntry(newEntryBox.getText().toString());
@@ -164,7 +165,8 @@ public class TodoListActivity extends FragmentActivity
          * when it loses focus
          */
         newEntryBox.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            public void onFocusChange(View view, boolean hasFocus) {
+            @Override
+			public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
                     newEntryBox.setText("");
                 }
@@ -533,7 +535,8 @@ public class TodoListActivity extends FragmentActivity
                 .setTitle(title)
                 .setMessage(notes)
                 .setPositiveButton("Done", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+                    @Override
+					public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
                     }
                 })
@@ -541,7 +544,8 @@ public class TodoListActivity extends FragmentActivity
 
         // Create a handler for the "Done" button
         notesDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            public void onDismiss(DialogInterface dialogInterface) {
+            @Override
+			public void onDismiss(DialogInterface dialogInterface) {
                 removeDialog(NOTES_DIALOG);
             }
         });

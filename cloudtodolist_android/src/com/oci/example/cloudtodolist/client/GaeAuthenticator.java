@@ -139,7 +139,7 @@ public class GaeAuthenticator implements HttpRestAuthenticator {
         AccountManagerFuture<Bundle> result = accountManager.getAuthToken(
                 account, authTokenType, true, null, new Handler());
 
-        Bundle bundle = (Bundle) result.getResult();
+        Bundle bundle = result.getResult();
 
         return bundle.getString(AccountManager.KEY_AUTHTOKEN);
 

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Paint;
 import android.net.Uri;
+import android.provider.BaseColumns;
 import android.support.v4.widget.CursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,7 +69,7 @@ public class TodoListCursorAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
 
         // Get the Indexes for the columns of interest.
-        final int idIdx = cursor.getColumnIndex(TodoListSchema.Entries._ID);
+        final int idIdx = cursor.getColumnIndex(BaseColumns._ID);
         final int titleIdx = cursor.getColumnIndex(TodoListSchema.Entries.TITLE);
         final int notesIdx = cursor.getColumnIndex(TodoListSchema.Entries.NOTES);
         final int completeIdx = cursor.getColumnIndex(TodoListSchema.Entries.COMPLETE);
@@ -114,7 +115,8 @@ public class TodoListCursorAdapter extends CursorAdapter {
              *
              * @param view view that was clicked.
              */
-            public void onClick(View view) {
+            @Override
+			public void onClick(View view) {
                 // Cast the view to a CheckBox and get the Entry ID from the tag
                 final CheckBox completeCheckBox = (CheckBox) view;
                 final Integer tag = (Integer) completeCheckBox.getTag();

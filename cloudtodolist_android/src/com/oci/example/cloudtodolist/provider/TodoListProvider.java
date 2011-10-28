@@ -1,8 +1,26 @@
 package com.oci.example.cloudtodolist.provider;
 
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.auth.AuthenticationException;
+import org.apache.http.auth.InvalidCredentialsException;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.accounts.Account;
-import android.content.*;
+import android.content.ContentProvider;
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.UriMatcher;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -11,22 +29,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
+import android.provider.BaseColumns;
 import android.util.Log;
+
 import com.oci.example.cloudtodolist.TodoListSyncHelper;
 import com.oci.example.cloudtodolist.client.GaeAuthenticator;
 import com.oci.example.cloudtodolist.client.HttpRestClient;
 import com.oci.example.cloudtodolist.client.TodoListRestClient;
-import org.apache.http.auth.AuthenticationException;
-import org.apache.http.auth.InvalidCredentialsException;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Provides access to a database of cloudtodolist entries. Each entry has an id, a title, notes,
@@ -92,7 +101,7 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
         @Override
         public void onCreate(SQLiteDatabase db) {
             db.execSQL("CREATE TABLE " + TodoListSchema.Entries.TABLE_NAME + " ("
-                    + TodoListSchema.Entries._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + TodoListSchema.Entries.ID + " INTEGER KEY UNIQUE DEFAULT NULL,"
                     + TodoListSchema.Entries.TITLE + " TEXT,"
                     + TodoListSchema.Entries.NOTES + " TEXT,"
@@ -228,7 +237,7 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
                  *  When an ENTRY_ID resource is specified, a filter to include that entry id  is
                  *  added to the where clause
                  */
-                qb.appendWhere(TodoListSchema.Entries._ID + "=" +
+                qb.appendWhere(BaseColumns._ID + "=" +
                         uri.getPathSegments().get(TodoListSchema.Entries.TODOLIST_ENTRY_ID_PATH_POSITION) + " AND ");
                 // fall through
             case ENTRIES:
@@ -419,7 +428,7 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
                  *  When an ENTRY_ID resource is specified, a filter to include that entry id  is
                  *  added to the where clause
                  */
-                whereBuilder.appendAnd(TodoListSchema.Entries._ID + " = " + getEntryIdFromUri(uri));
+                whereBuilder.appendAnd(BaseColumns._ID + " = " + getEntryIdFromUri(uri));
                 //fall through
             case ENTRIES:
                 // Append where clause to include all PENDING_DELETE = 0 rows
@@ -480,7 +489,7 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
                  *  When an ENTRY_ID resource is specified, a filter to include that entry id  is
                  *  added to the where clause
                  */
-                wherebuilder.appendAnd(TodoListSchema.Entries._ID + " = " + getEntryIdFromUri(uri));
+                wherebuilder.appendAnd(BaseColumns._ID + " = " + getEntryIdFromUri(uri));
                 // fall through
             case ENTRIES:
                 // Append where clause to include all PENDING_DELETE = 0 rows
@@ -917,11 +926,11 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
         String tempTableName = stageUpstreamSync();
 
         try {
-            String idWhere = TodoListSchema.Entries._ID + " = ?";
+            String idWhere = BaseColumns._ID + " = ?";
             // Walk through the temporary staging table and perform the pending action
             Cursor cur = db.query(tempTableName, null, null, null, null, null, TodoListSchema.Entries.DEFAULT_SORT_ORDER);
             for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
-                int rowId = cur.getInt(cur.getColumnIndex(TodoListSchema.Entries._ID));
+                int rowId = cur.getInt(cur.getColumnIndex(BaseColumns._ID));
                 String[] whereArgs = {Integer.toString(rowId)};
                 int id = cur.getInt(cur.getColumnIndex(TodoListSchema.Entries.ID));
 
