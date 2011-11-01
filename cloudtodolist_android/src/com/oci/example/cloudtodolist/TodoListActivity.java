@@ -319,7 +319,7 @@ public class TodoListActivity extends FragmentActivity
         cursor.moveToFirst();
         String notes = cursor.getString(cursor.getColumnIndex(TodoListSchema.Entries.NOTES));
 
-        menu.getItem(0).setEnabled((notes != null && !notes.isEmpty()));
+        menu.getItem(0).setEnabled((notes != null && !notes.equals("")));
     }
 
     /**
@@ -524,7 +524,7 @@ public class TodoListActivity extends FragmentActivity
         // Get the values from the cursor
         String title = cursor.getString(cursor.getColumnIndex(TodoListSchema.Entries.TITLE));
         String notes = cursor.getString(cursor.getColumnIndex(TodoListSchema.Entries.NOTES));
-        if (notes == null || notes.isEmpty()) {
+        if (notes == null || notes.equals("")) {
             notes = getString(R.string.empty_notes);
         }
 
