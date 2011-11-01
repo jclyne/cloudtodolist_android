@@ -255,12 +255,12 @@ public final class TodoListRestClient {
         if (values != null) {
             for (String key : keys) {
                 if (values.containsKey(key)) {
-                    if (!queryString.isEmpty()) queryString += ";";
+                    if (!queryString.equals("")) queryString += ";";
                     queryString += key + "=" + values.getAsString(key);
                 }
             }
         }
-        return (queryString.isEmpty() ? null : queryString);
+        return (queryString.equals("") ? null : queryString);
     }
 
     /**
