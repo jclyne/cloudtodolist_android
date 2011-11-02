@@ -278,7 +278,11 @@ public final class TodoListRestClient {
     public EntryObjectResponse postEntry(ContentValues values)
             throws IOException, URISyntaxException, JSONException, AuthenticationException {
 
-        String uri = ENTRIES_PATH;
+    	throw new UnsupportedOperationException("TodolistRestClient.postEntry is not implemented");
+    	
+    	// TODO Implement TodoListRestClient.postEntry
+    	
+/*        String uri = ENTRIES_PATH;
         String[] validParams = {ENTRY_TITLE, ENTRY_NOTES, ENTRY_COMPLETE};
 
         HttpRestClient.Response response = client.Post(uri,
@@ -293,7 +297,7 @@ public final class TodoListRestClient {
             Log.e(TAG, "post failed: " + response.getStatusCode() + "- " + response.getContent());
         }
 
-        return new EntryObjectResponse(response, resonseObject);
+        return new EntryObjectResponse(response, resonseObject);*/
     }
 
     /**
@@ -311,8 +315,12 @@ public final class TodoListRestClient {
      */
     public EntryObjectResponse putEntry(int id, ContentValues values)
             throws IOException, URISyntaxException, JSONException, AuthenticationException {
+    	
+    	throw new UnsupportedOperationException("TodolistRestClient.putEntry is not implemented");
+    	
+    	// TODO: Implement TodoListRestClient.putEntry
 
-        String uri = ENTRIES_PATH + "/" + id;
+       /* String uri = ENTRIES_PATH + "/" + id;
         String[] validParams = {ENTRY_TITLE, ENTRY_NOTES, ENTRY_COMPLETE};
 
         HttpRestClient.Response response = client.Put(uri,
@@ -327,7 +335,7 @@ public final class TodoListRestClient {
             Log.e(TAG, "post failed: " + response.getStatusCode() + "- " + response.getContent());
         }
 
-        return new EntryObjectResponse(response, responseObject);
+        return new EntryObjectResponse(response, responseObject);*/
     }
 
     /**
@@ -340,7 +348,10 @@ public final class TodoListRestClient {
      * @throws AuthenticationException indicates an error with the Authentication process
      */
     public Response deleteEntry(int id) throws IOException, URISyntaxException, AuthenticationException {
-        String uri = ENTRIES_PATH + "/" + id;
+    	throw new UnsupportedOperationException("TodolistRestClient.deleteEntry is not implemented");
+    	
+    	// TODO Implement TodoListRestClient.deleteEntry
+/*        String uri = ENTRIES_PATH + "/" + id;
 
         HttpRestClient.Response response = client.Delete(uri, null, HttpRestClient.ContentType.JSON);
         if (response.succeeded()) {
@@ -350,7 +361,7 @@ public final class TodoListRestClient {
         }
 
 
-        return new Response(response);
+        return new Response(response);*/
     }
 
     /**
@@ -393,8 +404,10 @@ public final class TodoListRestClient {
      */
     public EntryListResponse getEntries(Double modified)
             throws IOException, URISyntaxException, JSONException, AuthenticationException {
+    	throw new UnsupportedOperationException("TodolistRestClient.getEntries is not implemented");
 
-        String queryString = null;
+    	// TODO Implement TodoListRestClient.getEntries
+/*        String queryString = null;
         if (modified != null)
             queryString = String.format("%s=%f", ENTRY_MODIFIED, modified);
 
@@ -406,6 +419,6 @@ public final class TodoListRestClient {
         } else {
             Log.e(TAG, "getEntries failed: " + response.getStatusCode() + "- " + response.getContent());
         }
-        return new EntryListResponse(response, null);
+        return new EntryListResponse(response, null);*/
     }
 }

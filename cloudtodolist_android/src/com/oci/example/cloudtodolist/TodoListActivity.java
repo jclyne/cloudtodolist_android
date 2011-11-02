@@ -52,7 +52,7 @@ public class TodoListActivity extends FragmentActivity
     private TodoListCursorAdapter todoListAdapter;
     // Reference to an intenal broadcast receiver to handle connectivity events
     private BroadcastReceiver connectivityChangeReceiver;
-    private BroadcastReceiver syncProgressReceiver;
+    //private BroadcastReceiver syncProgressReceiver;
     
     /**
      * Called when the activity is starting
@@ -188,8 +188,12 @@ public class TodoListActivity extends FragmentActivity
         };
         registerReceiver(connectivityChangeReceiver, connectivityChangeFilter);
 
-        // Build a BroadcastReceiver that will update the window title based on connectivity events
-        IntentFilter syncProgressFilter = new IntentFilter();
+        // TODO Build a BroadcastReceiver that will update the window title based on connectivity events
+        // It should handle the STATUS_TODOLIST_SYNC_STARTED and STATUS_TODOLIST_SYNC_COMPLETE intents
+        //   to start and stop the Indeterminate progress bar in the title view. Should call unregister
+        //   in onDestroy.
+        
+/*        IntentFilter syncProgressFilter = new IntentFilter();
         syncProgressFilter.addAction(TodoListSyncService.STATUS_TODOLIST_SYNC_STARTED);
         syncProgressFilter.addAction(TodoListSyncService.STATUS_TODOLIST_SYNC_COMPLETE);
         syncProgressReceiver = new BroadcastReceiver() {
@@ -202,7 +206,7 @@ public class TodoListActivity extends FragmentActivity
             	}
             }
         };
-        registerReceiver(syncProgressReceiver, syncProgressFilter);
+        registerReceiver(syncProgressReceiver, syncProgressFilter);*/
         
         // Finally, request an intial sync
         TodoListSyncHelper.requestSync(this);
@@ -244,7 +248,7 @@ public class TodoListActivity extends FragmentActivity
     protected void onDestroy() {
         // Make sure to unregister the broadcast receiver
         unregisterReceiver(connectivityChangeReceiver);
-        unregisterReceiver(syncProgressReceiver);
+        //unregisterReceiver(syncProgressReceiver);
         super.onDestroy();
     }
 

@@ -71,6 +71,68 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
     }
 
     /**
+     * Helper class for building 'where' clause strings
+     */
+    @SuppressWarnings({"UnusedDeclaration","unused"})
+    private class WhereStringBuilder {
+        // Base where clause
+        String where;
+        // string to append to the base
+        String append;
+
+  
+		WhereStringBuilder() {
+            this.where = null;
+            this.append = null;
+        }
+
+        WhereStringBuilder(String where) {
+            this.where = where;
+            this.append = null;
+        }
+
+        void appendAnd(String append) {
+            if (this.append != null) {
+                this.append += " AND " + append;
+            } else {
+                this.append = append;
+            }
+        }
+
+        void appendAndParenthesis(String append) {
+            if (this.append != null) {
+                this.append += " AND (" + append + ")";
+            } else {
+                this.append = append;
+            }
+        }
+
+        void appendOr(String append) {
+            if (this.append != null) {
+                this.append += " OR " + append;
+            } else {
+                this.append = append;
+            }
+        }
+
+        void appendOrParenthesis(String append) {
+            if (this.append != null) {
+                this.append += " OR (" + append + ")";
+            } else {
+                this.append = append;
+            }
+        }
+
+        public String build() {
+            if (where != null) {
+                return where + " AND (" + append + ")";
+            } else {
+                return append;
+            }
+        }
+    }
+    
+    /**
      * A helper class to manage database creation and version management.
      * <p/>
      * NOTE: this will defer opening and upgrading the database until first use,
@@ -196,7 +258,10 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
     @Override
     public String getType(Uri uri) {
 
-        // Return the MIME type based on the incoming URI pattern
+    	// TODO implement TodoListProvider.getType
+    	throw new UnsupportedOperationException("TodolistProvider.getType is not implemented");
+    	
+/*        // Return the MIME type based on the incoming URI pattern
         switch (uriMatcher.match(uri)) {
 
             case ENTRIES:
@@ -207,7 +272,7 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
 
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
-        }
+        }*/
     }
 
     /**
@@ -225,23 +290,26 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
     @Override
     public Cursor query(Uri uri, String[] what, String where, String[] whereArgs, String sortOrder) {
 
-        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+    	// TODO implement TodoListProvider.query
+    	throw new UnsupportedOperationException("TodolistProvider.query is not implemented");
+    	
+/*        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         String orderBy;
         switch (uriMatcher.match(uri)) {
 
             case ENTRY_ID:
-                /**
+                *//**
                  *  When an ENTRY_ID resource is specified, a filter to include that entry id  is
                  *  added to the where clause
-                 */
+                 *//*
                 qb.appendWhere(BaseColumns._ID + "=" +
                         uri.getPathSegments().get(TodoListSchema.Entries.TODOLIST_ENTRY_ID_PATH_POSITION) + " AND ");
                 // fall through
             case ENTRIES:
-                /**
+                *//**
                  * For all requests, entries that have the PENDING_DELETE flag are not returned in the
                  * query and treated as if they have been deleted.
-                 */
+                 *//*
                 qb.appendWhere(TodoListSchema.Entries.PENDING_DELETE + "=" + 0);
                 qb.setTables(TodoListSchema.Entries.TABLE_NAME);
                 if (sortOrder != null) {
@@ -262,7 +330,7 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
         // This is required register the cursor, with the resolver, for notifications on the specified URI.
         cur.setNotificationUri(getContext().getContentResolver(), uri);
 
-        return cur;
+        return cur;*/
     }
 
     /**
@@ -275,7 +343,10 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
 
-        // Initialize a new ContentValues object to whatever was passed in
+    	// TODO implement TodoListProvider.insert
+    	throw new UnsupportedOperationException("TodolistProvider.insert is not implemented");
+    	
+       /* // Initialize a new ContentValues object to whatever was passed in
         ContentValues values = new ContentValues();
         if (contentValues != null)
             values.putAll(contentValues);
@@ -285,12 +356,12 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
 
         switch (uriMatcher.match(uri)) {
             case ENTRIES:
-                /**
+                *//**
                  * Initialize the PENDING_UPDATE to 2. This indicates that
                  * the entry needs to synced upstream. This is a tri-state flag
                  * used to indicate that the sync operation has been staged and
                  * completed.
-                 */
+                 *//*
                 values.put(TodoListSchema.Entries.PENDING_UPDATE, 2);
                 values.put(TodoListSchema.Entries.PENDING_DELETE, 0);
 
@@ -337,70 +408,10 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
         } catch (UnsupportedOperationException e) {
             // This will happen when running unit tests, just ignore
         }
-        return entryUri;
+        return entryUri;*/
     }
 
-    /**
-     * Helper class for building 'where' clause strings
-     */
-    @SuppressWarnings({"UnusedDeclaration","unused"})
-    private class WhereStringBuilder {
-        // Base where clause
-        String where;
-        // string to append to the base
-        String append;
-
-  
-		WhereStringBuilder() {
-            this.where = null;
-            this.append = null;
-        }
-
-        WhereStringBuilder(String where) {
-            this.where = where;
-            this.append = null;
-        }
-
-        void appendAnd(String append) {
-            if (this.append != null) {
-                this.append += " AND " + append;
-            } else {
-                this.append = append;
-            }
-        }
-
-        void appendAndParenthesis(String append) {
-            if (this.append != null) {
-                this.append += " AND (" + append + ")";
-            } else {
-                this.append = append;
-            }
-        }
-
-        void appendOr(String append) {
-            if (this.append != null) {
-                this.append += " OR " + append;
-            } else {
-                this.append = append;
-            }
-        }
-
-        void appendOrParenthesis(String append) {
-            if (this.append != null) {
-                this.append += " OR (" + append + ")";
-            } else {
-                this.append = append;
-            }
-        }
-
-        public String build() {
-            if (where != null) {
-                return where + " AND (" + append + ")";
-            } else {
-                return append;
-            }
-        }
-    }
+   
 
     /**
      * Handles requests to delete one or more rows
@@ -414,28 +425,31 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
     @Override
     public int delete(Uri uri, String where, String[] whereArgs) {
 
-        ContentValues values = new ContentValues();
+    	// TODO implement TodoListProvider.delete
+    	throw new UnsupportedOperationException("TodolistProvider.delete is not implemented");
+    	
+       /* ContentValues values = new ContentValues();
         int count;
 
         WhereStringBuilder whereBuilder = new WhereStringBuilder(where);
         switch (uriMatcher.match(uri)) {
 
             case ENTRY_ID:
-                /**
+                *//**
                  *  When an ENTRY_ID resource is specified, a filter to include that entry id  is
                  *  added to the where clause
-                 */
+                 *//*
                 whereBuilder.appendAnd(BaseColumns._ID + " = " + getEntryIdFromUri(uri));
                 //fall through
             case ENTRIES:
                 // Append where clause to include all PENDING_DELETE = 0 rows
                 whereBuilder.appendAnd(WHERE_NON_DELETED_ENTRIES);
 
-                /**
+                *//**
                  * The delete doesn't immediately delete, it set the  PENDING_DELETE flag
                  * to 1. This will trigger an upstream sync of the deleted item. Once it is
                  * delete upstream, it will be deleted completely from the database.
-                 */
+                 *//*
                 values.put(TodoListSchema.Entries.PENDING_DELETE, 1);
 
                 count = dbHelper.getWritableDatabase().update(TodoListSchema.Entries.TABLE_NAME,
@@ -456,7 +470,7 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
                 // This will happen when running unit tests, just ignore
             }
         }
-        return count;
+        return count;*/
     }
 
     /**
@@ -472,7 +486,10 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
     @Override
     public int update(Uri uri, ContentValues contentValues, String where, String[] whereArgs) {
 
-        // Initialize a new ContentValues object to whatever was passed in
+    	// TODO implement TodoListProvider.update
+    	throw new UnsupportedOperationException("TodolistProvider.update is not implemented");
+    	
+/*		// Initialize a new ContentValues object to whatever was passed in
         ContentValues values = new ContentValues();
         if (contentValues != null)
             values.putAll(contentValues);
@@ -482,10 +499,10 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
         switch (uriMatcher.match(uri)) {
 
             case ENTRY_ID:
-                /**
+                *//**
                  *  When an ENTRY_ID resource is specified, a filter to include that entry id  is
                  *  added to the where clause
-                 */
+                 *//*
                 wherebuilder.appendAnd(BaseColumns._ID + " = " + getEntryIdFromUri(uri));
                 // fall through
             case ENTRIES:
@@ -517,7 +534,7 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
             }
         }
 
-        return count;
+        return count;*/
     }
 
     /**

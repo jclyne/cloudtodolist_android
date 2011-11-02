@@ -34,15 +34,17 @@ public class TodoListSyncService extends IntentService {
     public static final String STATUS_TODOLIST_SYNC_STARTED = INTENT_BASE + "SYNC_STARTED";
     public static final String STATUS_TODOLIST_SYNC_COMPLETE = INTENT_BASE + "SYNC_COMPLETE";
 
+    // TODO Implement SyncService by extending the IntentServcie
+    
     // Reference to the content provider to sync
-    private TodoListProvider provider;
+    //private TodoListProvider provider;
 
     // HttpRest client to provide to the provider for sync
-    private HttpRestClient client;
+    //private HttpRestClient client;
 
 
-    @SuppressWarnings({"FieldCanBeLocal"})
-    private final int NETWORK_ERROR_RETRY = 30000;
+    // Network error retry delay
+    //private final int NETWORK_ERROR_RETRY = 30000;
 
     /**
      * Default constructor
@@ -59,7 +61,7 @@ public class TodoListSyncService extends IntentService {
         super.onCreate();
 
 
-        // Initialize the PreferenceManager reference
+/*        // Initialize the PreferenceManager reference
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         // Build a new rest client with the http client
@@ -76,7 +78,7 @@ public class TodoListSyncService extends IntentService {
                 .getLocalContentProvider();
 
         Log.d(TAG, "Service Created" + " (" + Thread.currentThread().getName() + ")");
-        sendBroadcast(new Intent(STATUS_TODOLIST_SYNC_STARTED));
+        sendBroadcast(new Intent(STATUS_TODOLIST_SYNC_STARTED));*/
     }
 
     /**
@@ -93,6 +95,8 @@ public class TodoListSyncService extends IntentService {
         Log.d(TAG, "Service Started, startId:" + startId + " (" + Thread.currentThread().getName() + ")");
         return super.onStartCommand(intent, flags, startId);
     }
+    
+    
 
     /**
      * Called by the system to notify a Service that it is no longer used and is being removed.
@@ -100,9 +104,9 @@ public class TodoListSyncService extends IntentService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        client.close();
+/*        client.close();
         Log.d(TAG, "Service Destroyed" + " (" + Thread.currentThread().getName() + ")");
-        sendBroadcast(new Intent(STATUS_TODOLIST_SYNC_COMPLETE));
+        sendBroadcast(new Intent(STATUS_TODOLIST_SYNC_COMPLETE));*/
     }
 
 
@@ -124,7 +128,7 @@ public class TodoListSyncService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        String action = intent.getAction();
+/*        String action = intent.getAction();
         Log.d(TAG, "onHandleIntent: Action = " + action + " (" + Thread.currentThread().getName() + ")");
 
         if (TodoListSyncHelper.isOnline(getBaseContext())
@@ -155,11 +159,10 @@ public class TodoListSyncService extends IntentService {
             if (res.networkError())
                 TodoListSyncHelper.scheduleSync(getBaseContext(), NETWORK_ERROR_RETRY);
             else if (!res.serverError())
-            /**
-             * On a server error, don't schedule another sync. This is not likely to go away
-             * so just wait until an explicit refresh is requested
-             */
+             // On a server error, don't schedule another sync. This is not likely to go away
+             // so just wait until an explicit refresh is requested
+
                 TodoListSyncHelper.scheduleSync(getBaseContext());
-        }
+        }*/
     }
 }
