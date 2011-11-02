@@ -390,7 +390,6 @@ public class TodoListActivity extends FragmentActivity
      * @param id   id of the dialog to display
      * @param args extra args
      * @return the newly created dialog
-     *         TODO: This is depracted, implement with DialogFragment
      */
     @Override
     protected Dialog onCreateDialog(int id, Bundle args) {

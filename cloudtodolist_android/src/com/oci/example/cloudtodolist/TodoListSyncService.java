@@ -1,18 +1,12 @@
 package com.oci.example.cloudtodolist;
 
 import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.IntentService;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
 import com.oci.example.cloudtodolist.client.HttpRestClient;
 import com.oci.example.cloudtodolist.provider.RestDataProvider;
 import com.oci.example.cloudtodolist.provider.TodoListProvider;
@@ -40,18 +34,6 @@ public class TodoListSyncService extends IntentService {
     public static final String STATUS_TODOLIST_SYNC_STARTED = INTENT_BASE + "SYNC_STARTED";
     public static final String STATUS_TODOLIST_SYNC_COMPLETE = INTENT_BASE + "SYNC_COMPLETE";
 
-    // ID of the sync result notification message
-    private static final int SYNC_RESULT_NOTIFICATION_ID = 1;
-
-    // Reference to the system wide ConnectivityManager
-    private ConnectivityManager connManager;
-
-    // Reference to the system wide Notification Manager to notify the user of Sync results
-    private NotificationManager notificationManager;
-
-    // Reference to the application SharedPreferences
-    private SharedPreferences prefs;
-
     // Reference to the content provider to sync
     private TodoListProvider provider;
 
@@ -76,14 +58,9 @@ public class TodoListSyncService extends IntentService {
     public void onCreate() {
         super.onCreate();
 
-        // Initialize the ConnectivityManager reference
-        connManager = (ConnectivityManager) getBaseContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        // Get a reference to the notification manager
-        notificationManager = (NotificationManager) getBaseContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
         // Initialize the PreferenceManager reference
-        prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         // Build a new rest client with the http client
         String serverAddr = prefs.getString(getString(R.string.setting_server_address),
@@ -150,12 +127,13 @@ public class TodoListSyncService extends IntentService {
         String action = intent.getAction();
         Log.d(TAG, "onHandleIntent: Action = " + action + " (" + Thread.currentThread().getName() + ")");
 
-        if (isOnline() && isSyncEnabled()) {
+        if (TodoListSyncHelper.isOnline(getBaseContext())
+        		&& TodoListSyncHelper.isSyncEnabled(getBaseContext())) {
             RestDataProvider.SyncResult res;
             boolean fullSync = action.equals(ACTION_TODOLIST_FULL_SYNC);
 
             // Get the currently configured preferred account to use to sync against
-            Account account = getPreferredAccount();
+            Account account = TodoListSyncHelper.getPreferredAccount(getBaseContext());
             if (account == null) {
                 TodoListSyncHelper.scheduleSync(getBaseContext());
                 return;
@@ -167,7 +145,7 @@ public class TodoListSyncService extends IntentService {
             }
 
             if (res.updated()) {
-                showSyncResultNotification(res);
+            	TodoListSyncHelper.showSyncResultNotification(getBaseContext(),res);
             }
 
             if (res.invalidCredentials) {
@@ -183,100 +161,5 @@ public class TodoListSyncService extends IntentService {
              */
                 TodoListSyncHelper.scheduleSync(getBaseContext());
         }
-    }
-
-    /**
-     * Retrieves the currently configured preferred account for syncing.
-     * There is a shared preference that indicates the  preferred account. This will validate
-     * that the preferred account setting still refers to a valid account. If there is no
-     * preferred account set, it will return the first account of the "com.google"  type
-     *
-     * @return Account object for the preferred account, or null if no accounts exists
-     */
-    private Account getPreferredAccount() {
-        AccountManager accountManager = AccountManager.get(getApplicationContext());
-        Account account = null;
-        Account[] accounts = accountManager.getAccountsByType(getString(R.string.setting_account_type));
-
-        if (accounts.length == 0) {
-            // no accounts error
-            return null;
-        }
-
-        String accountName = prefs.getString(getString(R.string.setting_google_account), null);
-        if (accountName != null) {
-            for (Account acc : accounts) {
-                if (acc.name.equals(accountName)) {
-                    account = acc;
-                    break;
-                }
-            }
-        }
-        // The preferred account is not set or it  no longer exists, select the first one
-        // of the specified type
-        if (account == null)
-            account = accounts[0];
-
-        return account;
-    }
-
-    /**
-     * Determines whether or not we are currently online and should call the
-     * provider's onPerformSync. This will look at the state of the active network.
-     *
-     * @return flag indicating whether to do an onPerformSync
-     */
-    private boolean isOnline() {
-        final NetworkInfo netInfo = connManager.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnected();
-    }
-
-
-    /**
-     * Determines whether or not sync is enabled  and should call the
-     * provider's onPerformSync.  This is determined by looking
-     * at the application offline mode setting and also at the connectivity manager
-     * background data setting.
-     *
-     * @return flag indicating whether sync is enabled
-     */
-    private boolean isSyncEnabled() {
-        return !prefs.getBoolean(getString(R.string.setting_offline_mode), false)
-                && connManager.getBackgroundDataSetting();
-    }
-
-    /**
-     * Show a system notification to indicate to the user that the TodoList was updated
-     *
-     * @param syncResult result of the previously successful sync operation
-     */
-    private void showSyncResultNotification(RestDataProvider.SyncResult syncResult) {
-
-        // Create a new notification, using system defaults
-        Notification notification = new Notification(
-                R.drawable.icon,
-                getString(R.string.sync_update_ticker),
-                System.currentTimeMillis());
-
-        notification.defaults |= Notification.DEFAULT_ALL;
-
-        // Build a pendingIntent that displays the cloudtodolist activity
-        PendingIntent todoListActivityIntent =
-                PendingIntent.getActivity(
-                        getBaseContext(), 0, new Intent(getBaseContext(), TodoListActivity.class), 0);
-
-        // Set the latest event info, this display info regarding the very latest event being notified on
-        notification.setLatestEventInfo(
-                getBaseContext(),
-                getResources().getQuantityString(R.plurals.sync_update_title,
-                        (int) syncResult.numEntries,
-                        (int) syncResult.numEntries),
-                getString(R.string.sync_update_text),
-                todoListActivityIntent);
-
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
-
-        // issue the notification
-        notificationManager.notify(SYNC_RESULT_NOTIFICATION_ID, notification);
     }
 }
