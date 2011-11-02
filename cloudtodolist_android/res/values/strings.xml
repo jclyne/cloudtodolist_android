@@ -54,6 +54,7 @@
     <string name="setting_https_title">Use Https</string>
     <string name="setting_https_summary_on">Enabled, network communication is encrypted</string>
     <string name="setting_https_summary_off">Disabled, network communication is in the clear</string>
+    <string name="lastSyncTime">lastSyncTime</string>
 
 
 </resources>

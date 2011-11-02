@@ -1,8 +1,6 @@
 package com.oci.example.cloudtodolist.provider;
 
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -20,6 +18,7 @@ import android.content.ContentProviderResult;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.UriMatcher;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -32,6 +31,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
 
+import com.oci.example.cloudtodolist.R;
 import com.oci.example.cloudtodolist.TodoListSyncHelper;
 import com.oci.example.cloudtodolist.client.GaeAuthenticator;
 import com.oci.example.cloudtodolist.client.HttpRestClient;
@@ -113,8 +113,7 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
                     + TodoListSchema.Entries.PENDING_DELETE + " INTEGER KEY DEFAULT 0"
                     + ");");
 
-            lastSyncTime = 0;
-            commitLastSyncTime();
+            setLastSyncTime(0);
         }
 
 
@@ -165,10 +164,8 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
 
     private static final String WHERE_NON_DELETED_ENTRIES = TodoListSchema.Entries.PENDING_DELETE + " = 0";
 
-    // Filename that persists the lastSyncTime for updates
-    private static final String LAST_SYNC_TIME_FILENAME = "lastSyncTime";
-    // Current lastSyncTimeValue
-    private double lastSyncTime = 0;
+    // Shared prefs object for TodoListProvider persistent data
+    private SharedPreferences sharedPreferences;
 
     /**
      * This method is called for all registered content providers on the application main thread at
@@ -183,8 +180,8 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
         // something tries to access it, and it's only created if it doesn't already exist.
         dbHelper = new DatabaseHelper(getContext());
 
-        // Initialize the last sync time for its persisted file
-        initLastSyncTime();
+        // Initialize the last sync time from the shared prefs
+        sharedPreferences = getContext().getSharedPreferences(this.getClass().getName(), Context.MODE_PRIVATE);
 
         // Assumes that any failures will be reported by a thrown exception.
         return true;
@@ -577,7 +574,7 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
     private void clearLocalDataStore() {
 
         dbHelper.getWritableDatabase().delete(TodoListSchema.Entries.TABLE_NAME, null, null);
-        lastSyncTime = 0;
+        setLastSyncTime(0);
     }
 
     /**
@@ -663,7 +660,7 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
         }
 
         if (!(result.serverError() || result.networkError())) {
-            if (lastSyncTime > 0) {
+            if (lastSyncTime() > 0) {
                 performIncrementalSync(client, result);
             } else {
                 performFullSync(client, result);
@@ -685,7 +682,7 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
     private void performIncrementalSync(TodoListRestClient client, SyncResult result) {
 
         try {
-            TodoListRestClient.EntryListResponse response = client.getEntries(lastSyncTime);
+            TodoListRestClient.EntryListResponse response = client.getEntries(lastSyncTime());
             int statusCode = response.getResponse().getStatusCode();
             if (statusCode == TodoListRestClient.Response.SUCCESS_OK) {
                 List<JSONObject> entries = response.getEntryList();
@@ -743,8 +740,7 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
                             }
                         }
                     }
-                    lastSyncTime = response.getTimestamp();
-                    commitLastSyncTime();
+                    setLastSyncTime(response.getTimestamp());
                     db.setTransactionSuccessful();
                 } finally {
                     db.endTransaction();
@@ -825,8 +821,7 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
                         db.update(TodoListSchema.Entries.TABLE_NAME, values, where, whereArgs);
                     }
 
-                    lastSyncTime = response.getTimestamp();
-                    commitLastSyncTime();
+                    setLastSyncTime(response.getTimestamp());
 
 
                     db.setTransactionSuccessful();
@@ -1032,48 +1027,23 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
     }
 
     /**
-     * Initializes the lastSyncTime from the persistent file
+     * Retrieves the last sync time from the SharedPrefs
      */
-    private void initLastSyncTime() {
-        FileInputStream stream = null;
-
-        try {
-            stream = getContext().openFileInput(LAST_SYNC_TIME_FILENAME);
-            byte[] buffer = new byte[128];
-            if (stream.read(buffer, 0, buffer.length) > 0) {
-                lastSyncTime = Double.parseDouble(new String(buffer));
-            }
-
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to retrieve last sync time: " + LAST_SYNC_TIME_FILENAME);
-            lastSyncTime = 0;
-        } finally {
-            try {
-                if (stream != null)
-                    stream.close();
-            } catch (IOException ignored) {
-            }
-        }
+    private double lastSyncTime() {
+    	String key = getContext().getString(R.string.lastSyncTime);
+    	String val = sharedPreferences.getString( key, "0");
+    	return Double.parseDouble(val);
+    	
     }
 
     /**
-     * Writes the lastSyncTime to a persistent file
+     * Writes the lastSyncTime to a the SharedPRefs
      */
-    private void commitLastSyncTime() {
-        FileOutputStream stream = null;
-
-        try {
-            stream = getContext().openFileOutput(LAST_SYNC_TIME_FILENAME, Context.MODE_PRIVATE);
-            stream.write(String.format("%f", lastSyncTime).getBytes());
-
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to save last sync time: " + LAST_SYNC_TIME_FILENAME);
-        } finally {
-            try {
-                if (stream != null)
-                    stream.close();
-            } catch (IOException ignored) {
-            }
-        }
+    private void setLastSyncTime(double lastSyncTime) {
+    	SharedPreferences.Editor editor = sharedPreferences.edit();
+    	String key = getContext().getString(R.string.lastSyncTime);
+    	String val = Double.toString(lastSyncTime);
+    	editor.putString(key,val);
+    	editor.commit();
     }
 }
