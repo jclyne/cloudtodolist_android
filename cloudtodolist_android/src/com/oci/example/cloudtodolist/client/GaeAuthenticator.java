@@ -93,9 +93,9 @@ public class GaeAuthenticator implements HttpRestAuthenticator {
                 invalidateAuthToken(token);
                 token = getAuthToken();
                 if (!loginWithAuthToken(client, token, scheme, authority)) {
-                    String msg = "login, Invalid Credentials: " + account.name + "(" + account.type + ")";
+                    String msg = "Server error during login, Invalid Credentials: " + account.name + "(" + account.type + ")";
                     Log.e(TAG, msg);
-                    throw new InvalidCredentialsException(msg);
+                    throw new IOException(msg);
                 }
             }
 
@@ -153,7 +153,7 @@ public class GaeAuthenticator implements HttpRestAuthenticator {
      * @param token stale auth token to invalidate
      */
     private void invalidateAuthToken(String token) {
-        accountManager.invalidateAuthToken(authTokenType, token);
+        accountManager.invalidateAuthToken(account.type, token);
     }
 
     /**
