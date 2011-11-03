@@ -1,23 +1,27 @@
 package com.oci.example.cloudtodolist.client;
 
-import android.accounts.*;
-import android.content.Context;
-import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolException;
 import org.apache.http.auth.AuthenticationException;
-import org.apache.http.auth.InvalidCredentialsException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.accounts.AccountManagerFuture;
+import android.accounts.AuthenticatorException;
+import android.accounts.OperationCanceledException;
+import android.content.Context;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 
 /**
  * Implementation of a RestAuthenticator for Google App Engine hosted
