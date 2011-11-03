@@ -1,16 +1,8 @@
 package com.oci.example.cloudtodolist;
 
-import android.accounts.Account;
 import android.app.IntentService;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
-
-import com.oci.example.cloudtodolist.client.HttpRestClient;
-import com.oci.example.cloudtodolist.provider.RestDataProvider;
-import com.oci.example.cloudtodolist.provider.TodoListProvider;
-import com.oci.example.cloudtodolist.provider.TodoListSchema;
 
 /**
  * Service that handles sync and refresh request intents and handles
@@ -148,21 +140,18 @@ public class TodoListSyncService extends IntentService {
                 res = provider.onPerformSync(client, account, fullSync);
             }
 
-            if (res.updated()) {
-            	TodoListSyncHelper.showSyncResultNotification(getBaseContext(),res);
-            }
+            TodoListSyncHelper.showSyncResultNotification(getBaseContext(),res);
+            
 
-            if (res.invalidCredentials) {
-                // Show invalid credentials notification
-            }
-
-            if (res.networkError())
+            if (res.networkError()) {
                 TodoListSyncHelper.scheduleSync(getBaseContext(), NETWORK_ERROR_RETRY);
-            else if (!res.serverError())
+            } else if (!res.serverError()){
              // On a server error, don't schedule another sync. This is not likely to go away
              // so just wait until an explicit refresh is requested
 
                 TodoListSyncHelper.scheduleSync(getBaseContext());
+            }
         }*/
+
     }
 }

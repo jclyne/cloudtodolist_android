@@ -51,6 +51,10 @@ public interface RestDataProvider {
         public boolean authenticationError() {
             return numAuthenticationErrors > 0;
         }
+        
+        public boolean needsNotification(){
+        	return updated() || networkError() || serverError() || authenticationError();
+        }
 
 
     }

@@ -610,13 +610,15 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
                 entry.getBoolean(TodoListRestClient.ENTRY_COMPLETE) ? 1 : 0);
 
         if (!entry.isNull(TodoListRestClient.ENTRY_TITLE)) {
-            entryValues.put(TodoListSchema.Entries.TITLE,
-                    entry.optString(TodoListRestClient.ENTRY_TITLE));
+            entryValues.put(TodoListSchema.Entries.TITLE, entry.getString(TodoListRestClient.ENTRY_TITLE));
+        } else {
+        	entryValues.put(TodoListSchema.Entries.TITLE,"");
         }
 
         if (!entry.isNull(TodoListRestClient.ENTRY_NOTES)) {
-            entryValues.put(TodoListSchema.Entries.NOTES,
-                    entry.optString(TodoListRestClient.ENTRY_NOTES));
+            entryValues.put(TodoListSchema.Entries.NOTES, entry.getString(TodoListRestClient.ENTRY_NOTES));
+        }else {
+        	entryValues.put(TodoListSchema.Entries.NOTES,"");
         }
 
         entryValues.put(TodoListSchema.Entries.CREATED,
@@ -644,24 +646,29 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
         SyncResult result = new SyncResult();
 
         // Wrap the HttpRest client in a TodoListRest client which wraps the service API
-        if (account != null)
+        if (account != null) {
             try {
                 httpRestClient.setAuthenticator(new GaeAuthenticator(getContext(), account));
             } catch (AuthenticationException e) {
                 Log.e(TAG, "onPerformSync, Authentication Error: " + e.getMessage());
                 result.numAuthenticationErrors++;
-                if (e instanceof InvalidCredentialsException) {
+                if (e.getCause() instanceof InvalidCredentialsException) {
                     result.invalidCredentials = true;
                 }
+                return result;
+                
             } catch (IOException e) {
                 Log.e(TAG, "onPerformSync, Network Error: " + e.getMessage());
                 result.numIoExceptions += 1;
+                return result;
 
             } catch (URISyntaxException e) {
                 Log.e(TAG, "onPerformSync, Invalid request: " + e.getMessage());
                 result.numRequestExceptions += 1;
+                return result;
 
             }
+        }
 
         TodoListRestClient client = new TodoListRestClient(httpRestClient);
 
@@ -936,11 +943,12 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
     void performUpstreamSync(TodoListRestClient client, SyncResult result) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String tempTableName = stageUpstreamSync();
-
+        Cursor cur=null;
+        
         try {
             String idWhere = BaseColumns._ID + " = ?";
             // Walk through the temporary staging table and perform the pending action
-            Cursor cur = db.query(tempTableName, null, null, null, null, null, TodoListSchema.Entries.DEFAULT_SORT_ORDER);
+            cur = db.query(tempTableName, null, null, null, null, null, TodoListSchema.Entries.DEFAULT_SORT_ORDER);
             for (cur.moveToFirst(); !cur.isAfterLast(); cur.moveToNext()) {
                 int rowId = cur.getInt(cur.getColumnIndex(BaseColumns._ID));
                 String[] whereArgs = {Integer.toString(rowId)};
@@ -1027,6 +1035,7 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
             result.numIoExceptions += 1;
         } finally {
             endUpstreamSync(tempTableName);
+            cur.close();
         }
     }
 
