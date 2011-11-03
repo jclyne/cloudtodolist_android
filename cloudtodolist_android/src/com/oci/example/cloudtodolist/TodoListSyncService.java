@@ -1,6 +1,7 @@
 package com.oci.example.cloudtodolist;
 
 import android.app.IntentService;
+import android.content.ContentProviderClient;
 import android.content.Intent;
 import android.util.Log;
 
@@ -28,8 +29,9 @@ public class TodoListSyncService extends IntentService {
 
     // TODO Implement SyncService by extending the IntentServcie
     
-    // Reference to the content provider to sync
     //private TodoListProvider provider;
+    //private ContentProviderClient  todoListProviderClient;
+
 
     // HttpRest client to provide to the provider for sync
     //private HttpRestClient client;
@@ -65,9 +67,7 @@ public class TodoListSyncService extends IntentService {
         client = new HttpRestClient(serverAddr, useHttps, getBaseContext());
 
         // Initialize the TodoListProvider reference
-        provider = (TodoListProvider) getContentResolver()
-                .acquireContentProviderClient(TodoListSchema.AUTHORITY)
-                .getLocalContentProvider();
+        todoListProviderClient = getContentResolver().acquireContentProviderClient(TodoListSchema.AUTHORITY);
 
         Log.d(TAG, "Service Created" + " (" + Thread.currentThread().getName() + ")");
         sendBroadcast(new Intent(STATUS_TODOLIST_SYNC_STARTED));*/
@@ -96,7 +96,11 @@ public class TodoListSyncService extends IntentService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-/*        client.close();
+
+/*      todoListProviderClient.release();
+        client.close();
+        
+
         Log.d(TAG, "Service Destroyed" + " (" + Thread.currentThread().getName() + ")");
         sendBroadcast(new Intent(STATUS_TODOLIST_SYNC_COMPLETE));*/
     }
@@ -135,21 +139,26 @@ public class TodoListSyncService extends IntentService {
                 return;
             }
 
-            res = provider.onPerformSync(client, account, fullSync);
-            if (res.fullSyncRequested) {
-                res = provider.onPerformSync(client, account, fullSync);
-            }
+            TodoListProvider provider = (TodoListProvider)todoListProviderClient.getLocalContentProvider();
+            if (provider != null){
+	            res = provider.onPerformSync(client, account, fullSync);
+	            if (res.fullSyncRequested) {
+	                res = provider.onPerformSync(client, account, fullSync);
+	            }
+	
+	            TodoListSyncHelper.showSyncResultNotification(getBaseContext(),res);
+	            
+	
+	            if (res.networkError())
+	            {
+	                TodoListSyncHelper.scheduleSync(getBaseContext(), NETWORK_ERROR_RETRY);
+	            } else if (!res.serverError()){
+		           
+		            // On a server error, don't schedule another sync. This is not likely to go away
+		            // so just wait until an explicit refresh is requested
+	                TodoListSyncHelper.scheduleSync(getBaseContext());
+	            }
 
-            TodoListSyncHelper.showSyncResultNotification(getBaseContext(),res);
-            
-
-            if (res.networkError()) {
-                TodoListSyncHelper.scheduleSync(getBaseContext(), NETWORK_ERROR_RETRY);
-            } else if (!res.serverError()){
-             // On a server error, don't schedule another sync. This is not likely to go away
-             // so just wait until an explicit refresh is requested
-
-                TodoListSyncHelper.scheduleSync(getBaseContext());
             }
         }*/
 
