@@ -144,22 +144,19 @@ public class TodoListSyncService extends IntentService {
                 res = provider.onPerformSync(client, account, fullSync);
             }
 
-            if (res.updated()) {
-            	TodoListSyncHelper.showSyncResultNotification(getBaseContext(),res);
-            }
-
-            if (res.invalidCredentials) {
-                // Show invalid credentials notification
-            }
+            TodoListSyncHelper.showSyncResultNotification(getBaseContext(),res);
+            
 
             if (res.networkError())
+            {
                 TodoListSyncHelper.scheduleSync(getBaseContext(), NETWORK_ERROR_RETRY);
-            else if (!res.serverError())
-            /**
-             * On a server error, don't schedule another sync. This is not likely to go away
-             * so just wait until an explicit refresh is requested
-             */
+            } else if (!res.serverError()){
+	            /**
+	             * On a server error, don't schedule another sync. This is not likely to go away
+	             * so just wait until an explicit refresh is requested
+	             */
                 TodoListSyncHelper.scheduleSync(getBaseContext());
+            }
         }
     }
 }

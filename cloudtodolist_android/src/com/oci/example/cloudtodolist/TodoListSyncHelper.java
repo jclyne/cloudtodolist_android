@@ -174,32 +174,51 @@ public class TodoListSyncHelper {
      */
     public static void showSyncResultNotification(Context ctxt, RestDataProvider.SyncResult syncResult) {
 
-        // Create a new notification, using system defaults
-        Notification notification = new Notification(
-                R.drawable.icon,
-                ctxt.getString(R.string.sync_update_ticker),
-                System.currentTimeMillis());
-
-        notification.defaults |= Notification.DEFAULT_ALL;
-
-        // Build a pendingIntent that displays the cloudtodolist activity
+    	if (!syncResult.needsNotification())
+    		return;
+    	
+    	Notification notification = null;
+    	
+    	// Build a pendingIntent that displays the cloudtodolist activity
         PendingIntent todoListActivityIntent =
                 PendingIntent.getActivity(
                 		ctxt, 0, new Intent(ctxt, TodoListActivity.class), 0);
 
+
         // Set the latest event info, this display info regarding the very latest event being notified on
-        notification.setLatestEventInfo(
-        		ctxt,
-        		ctxt.getResources().getQuantityString(R.plurals.sync_update_title,
-                        (int) syncResult.numEntries,
-                        (int) syncResult.numEntries),
-                ctxt.getString(R.string.sync_update_text),
-                todoListActivityIntent);
+        if (syncResult.updated()){
+        	notification = new Notification(
+                    R.drawable.icon,
+                    ctxt.getString(R.string.sync_update_ticker),
+                    System.currentTimeMillis());
 
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+	        notification.setLatestEventInfo(
+	        		ctxt,
+	        		ctxt.getResources().getQuantityString(R.plurals.sync_update_title,
+	                        (int) syncResult.numEntries,
+	                        (int) syncResult.numEntries),
+	                ctxt.getString(R.string.sync_update_text),
+	                todoListActivityIntent);
+        } else if (syncResult.authenticationError()) {
+        	notification = new Notification(
+                    R.drawable.icon,
+                    ctxt.getString(R.string.sync_invalid_credentials_ticker),
+                    System.currentTimeMillis());
 
-        // issue the notification
-        getNotificationManager(ctxt).notify(SYNC_RESULT_NOTIFICATION_ID, notification);
+        	notification.setLatestEventInfo(
+	        		ctxt,
+	        		ctxt.getString(R.string.sync_invalid_credentials_title),
+	                ctxt.getString(R.string.sync_invalid_credentials_text),
+	                todoListActivityIntent);
+        } 
+        
+        if (notification != null){
+	        notification.defaults |= Notification.DEFAULT_ALL;
+	        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+	
+	        // issue the notification
+	        getNotificationManager(ctxt).notify(SYNC_RESULT_NOTIFICATION_ID, notification);
+        }
     }
 
     /**
