@@ -1,0 +1,58 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.redpantssoft.cloudtodolist">
+
+
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+
+    <application android:label="@string/app_name" android:icon="@drawable/icon" android:allowBackup="true">
+
+        <provider android:name="com.redpantssoft.cloudtodolist.provider.TodoListProvider"
+            android:authorities="com.redpantssoft.cloudtodolist.provider"
+            android:exported="false">
+            <grant-uri-permission android:pathPattern=".*"/>
+        </provider>
+
+        <activity android:name="com.redpantssoft.cloudtodolist.TodoListActivity"
+            android:label="@string/todolist_activity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name="com.redpantssoft.cloudtodolist.TodoListEditEntryActivity"
+            android:label="@string/edit_entry_activity">
+            <intent-filter>
+                <action android:name="android.intent.action.EDIT"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="vnd.android.cursor.item/vnd.oci.cloudtodolist.entry"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name="com.redpantssoft.cloudtodolist.TodoListPreferencesActivity"
+            android:label="@string/todolist_preferences_activity"/>
+
+        <service android:name="com.redpantssoft.cloudtodolist.TodoListSyncService"
+            android:label="TodoListSyncService">
+
+            <intent-filter>
+                <action android:name="com.redpantssoft.cloudtodolist.SYNC"/>
+                <action android:name="com.redpantssoft.cloudtodolist.FULL_SYNC"/>
+            </intent-filter>
+
+        </service>
+
+        <receiver android:name="com.redpantssoft.cloudtodolist.TodoListSyncScheduler">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

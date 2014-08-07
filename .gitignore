@@ -1,9 +1,5 @@
-out/
-*/static/*
-*/gen/
-*.pyc
-jar/
-*.db
-*/bin
-.metadata
-
+.gradle
+/local.properties
+/.idea/workspace.xml
+.DS_Store
+/build
