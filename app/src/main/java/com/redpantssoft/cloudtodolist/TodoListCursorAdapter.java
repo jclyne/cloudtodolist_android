@@ -117,7 +117,7 @@ public class TodoListCursorAdapter extends CursorAdapter {
              * @param view view that was clicked.
              */
             @Override
-			public void onClick(View view) {
+            public void onClick(View view) {
                 // Cast the view to a CheckBox and get the Entry ID from the tag
                 final CheckBox completeCheckBox = (CheckBox) view;
                 final Integer tag = (Integer) completeCheckBox.getTag();
@@ -141,7 +141,7 @@ public class TodoListCursorAdapter extends CursorAdapter {
         titleTextView.setText(title);
 
         // Set the Notes summary
-        notesTextView.setText( notes != null ? notes : "");
+        notesTextView.setText(notes != null ? notes : "");
 
         // Set the modified time
         Calendar now = new GregorianCalendar();

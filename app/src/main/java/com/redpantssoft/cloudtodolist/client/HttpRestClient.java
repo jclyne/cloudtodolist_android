@@ -211,7 +211,7 @@ public class HttpRestClient {
 
         /**
          * @return boolean representing whether the response
-         *         represents a successful request
+         * represents a successful request
          */
         public boolean succeeded() {
             return statusCode >= 200 && statusCode < 300;
@@ -242,18 +242,19 @@ public class HttpRestClient {
                 PlainSocketFactory.getSocketFactory(), 80));
         schemeRegistry.register(new Scheme("https",
                 SSLCertificateSocketFactory.getHttpSocketFactory(
-                        SOCKET_OPERATION_TIMEOUT, sessionCache), 443));
+                        SOCKET_OPERATION_TIMEOUT, sessionCache), 443
+        ));
 
         connManager = new SingleClientConnManager(params, schemeRegistry);
 
         this.client = new DefaultHttpClient(connManager, params);
     }
 
-	public void close() {
-		// Shutdown the connection manager
-		connManager.shutdown(); 
-	}
-	
+    public void close() {
+        // Shutdown the connection manager
+        connManager.shutdown();
+    }
+
     /**
      * @return apache HttpClient wrapped by this class
      */
@@ -612,7 +613,8 @@ public class HttpRestClient {
             return new Response(statusCode,
                     contentToString(entity.getContent(),
                             contentEncoding),
-                    contentType);
+                    contentType
+            );
         } else {
             // If the status code indicates error, build the response object
             //  with the status reason phrase in the content field
@@ -649,7 +651,8 @@ public class HttpRestClient {
             case GZIP:
                 reader = new BufferedReader(
                         new InputStreamReader(
-                                new GZIPInputStream(instream)));
+                                new GZIPInputStream(instream))
+                );
                 break;
 
             case NONE:

@@ -31,13 +31,13 @@ public class TodoListSyncService extends IntentService {
     private static final String INTENT_BASE = "com.redpantssoft.cloudtodolist.";
     public static final String ACTION_TODOLIST_SYNC = INTENT_BASE + "SYNC";
     public static final String ACTION_TODOLIST_FULL_SYNC = INTENT_BASE + "FULL_SYNC";
-    
+
     // These are notification intents, an activity can register for a broadcast to get updates
     public static final String STATUS_TODOLIST_SYNC_STARTED = INTENT_BASE + "SYNC_STARTED";
     public static final String STATUS_TODOLIST_SYNC_COMPLETE = INTENT_BASE + "SYNC_COMPLETE";
 
     // Reference to the content provider to sync
-    private ContentProviderClient  todoListProviderClient;
+    private ContentProviderClient todoListProviderClient;
 
     // HttpRest client to provide to the provider for sync
     private HttpRestClient client;
@@ -86,7 +86,7 @@ public class TodoListSyncService extends IntentService {
      * @param flags   additional data about this start request.
      * @param startId unique integer representing this specific request to start.
      * @return indicates what semantics the system should use for the service's
-     *         current started state. should be values from START_CONTINUATION_MASK
+     * current started state. should be values from START_CONTINUATION_MASK
      */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -102,7 +102,7 @@ public class TodoListSyncService extends IntentService {
         super.onDestroy();
         todoListProviderClient.release();
         client.close();
-        
+
         Log.d(TAG, "Service Destroyed" + " (" + Thread.currentThread().getName() + ")");
         sendBroadcast(new Intent(STATUS_TODOLIST_SYNC_COMPLETE));
     }
@@ -130,7 +130,7 @@ public class TodoListSyncService extends IntentService {
         Log.d(TAG, "onHandleIntent: Action = " + action + " (" + Thread.currentThread().getName() + ")");
 
         if (TodoListSyncHelper.isOnline(getBaseContext())
-        		&& TodoListSyncHelper.isSyncEnabled(getBaseContext())) {
+                && TodoListSyncHelper.isSyncEnabled(getBaseContext())) {
             RestDataProvider.SyncResult res;
             boolean fullSync = action.equals(ACTION_TODOLIST_FULL_SYNC);
 
@@ -141,26 +141,25 @@ public class TodoListSyncService extends IntentService {
                 return;
             }
 
-            TodoListProvider provider = (TodoListProvider)todoListProviderClient.getLocalContentProvider();
-            if (provider != null){
-	            res = provider.onPerformSync(client, account, fullSync);
-	            if (res.fullSyncRequested) {
-	                res = provider.onPerformSync(client, account, fullSync);
-	            }
-	
-	            TodoListSyncHelper.showSyncResultNotification(getBaseContext(),res);
-	            
-	
-	            if (res.networkError())
-	            {
-	                TodoListSyncHelper.scheduleSync(getBaseContext(), NETWORK_ERROR_RETRY);
-	            } else if (!res.serverError()){
-		            /**
-		             * On a server error, don't schedule another sync. This is not likely to go away
-		             * so just wait until an explicit refresh is requested
-		             */
-	                TodoListSyncHelper.scheduleSync(getBaseContext());
-	            }
+            TodoListProvider provider = (TodoListProvider) todoListProviderClient.getLocalContentProvider();
+            if (provider != null) {
+                res = provider.onPerformSync(client, account, fullSync);
+                if (res.fullSyncRequested) {
+                    res = provider.onPerformSync(client, account, fullSync);
+                }
+
+                TodoListSyncHelper.showSyncResultNotification(getBaseContext(), res);
+
+
+                if (res.networkError()) {
+                    TodoListSyncHelper.scheduleSync(getBaseContext(), NETWORK_ERROR_RETRY);
+                } else if (!res.serverError()) {
+                    /**
+                     * On a server error, don't schedule another sync. This is not likely to go away
+                     * so just wait until an explicit refresh is requested
+                     */
+                    TodoListSyncHelper.scheduleSync(getBaseContext());
+                }
             }
         }
     }

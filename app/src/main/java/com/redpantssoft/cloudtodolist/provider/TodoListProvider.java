@@ -305,7 +305,8 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
                 if (!values.containsKey(TodoListSchema.Entries.TITLE))
                     values.put(TodoListSchema.Entries.TITLE,
                             Resources.getSystem()
-                                    .getString(android.R.string.untitled));
+                                    .getString(android.R.string.untitled)
+                    );
 
                 if (!values.containsKey(TodoListSchema.Entries.NOTES))
                     values.put(TodoListSchema.Entries.NOTES, "");
@@ -344,15 +345,15 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
     /**
      * Helper class for building 'where' clause strings
      */
-    @SuppressWarnings({"UnusedDeclaration","unused"})
+    @SuppressWarnings({"UnusedDeclaration", "unused"})
     private class WhereStringBuilder {
         // Base where clause
         String where;
         // string to append to the base
         String append;
 
-  
-		WhereStringBuilder() {
+
+        WhereStringBuilder() {
             this.where = null;
             this.append = null;
         }
@@ -596,13 +597,13 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
         if (!entry.isNull(TodoListRestClient.ENTRY_TITLE)) {
             entryValues.put(TodoListSchema.Entries.TITLE, entry.getString(TodoListRestClient.ENTRY_TITLE));
         } else {
-        	entryValues.put(TodoListSchema.Entries.TITLE,"");
+            entryValues.put(TodoListSchema.Entries.TITLE, "");
         }
 
         if (!entry.isNull(TodoListRestClient.ENTRY_NOTES)) {
             entryValues.put(TodoListSchema.Entries.NOTES, entry.getString(TodoListRestClient.ENTRY_NOTES));
-        }else {
-        	entryValues.put(TodoListSchema.Entries.NOTES,"");
+        } else {
+            entryValues.put(TodoListSchema.Entries.NOTES, "");
         }
 
         entryValues.put(TodoListSchema.Entries.CREATED,
@@ -640,7 +641,7 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
                     result.invalidCredentials = true;
                 }
                 return result;
-                
+
             } catch (IOException e) {
                 Log.e(TAG, "onPerformSync, Network Error: " + e.getMessage());
                 result.numIoExceptions += 1;
@@ -927,8 +928,8 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
     void performUpstreamSync(TodoListRestClient client, SyncResult result) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String tempTableName = stageUpstreamSync();
-        Cursor cur=null;
-        
+        Cursor cur = null;
+
         try {
             String idWhere = BaseColumns._ID + " = ?";
             // Walk through the temporary staging table and perform the pending action
@@ -989,7 +990,8 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
                             long pendingTx = DatabaseUtils.longForQuery(db,
                                     "SELECT " + TodoListSchema.Entries.PENDING_UPDATE
                                             + " FROM " + TodoListSchema.Entries.TABLE_NAME
-                                            + " WHERE " + idWhere, whereArgs);
+                                            + " WHERE " + idWhere, whereArgs
+                            );
                             values.put(TodoListSchema.Entries.PENDING_UPDATE, pendingTx - 1);
                             db.update(TodoListSchema.Entries.TABLE_NAME, values, idWhere, whereArgs);
                             notifyContentResolverOfChange(rowId);
@@ -1040,20 +1042,20 @@ public class TodoListProvider extends ContentProvider implements RestDataProvide
      * Retrieves the last sync time from the SharedPrefs
      */
     private double lastSyncTime() {
-    	String key = getContext().getString(R.string.lastSyncTime);
-    	String val = sharedPreferences.getString( key, "0");
-    	return Double.parseDouble(val);
-    	
+        String key = getContext().getString(R.string.lastSyncTime);
+        String val = sharedPreferences.getString(key, "0");
+        return Double.parseDouble(val);
+
     }
 
     /**
      * Writes the lastSyncTime to a the SharedPRefs
      */
     private void setLastSyncTime(double lastSyncTime) {
-    	SharedPreferences.Editor editor = sharedPreferences.edit();
-    	String key = getContext().getString(R.string.lastSyncTime);
-    	String val = Double.toString(lastSyncTime);
-    	editor.putString(key,val);
-    	editor.commit();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        String key = getContext().getString(R.string.lastSyncTime);
+        String val = Double.toString(lastSyncTime);
+        editor.putString(key, val);
+        editor.commit();
     }
 }

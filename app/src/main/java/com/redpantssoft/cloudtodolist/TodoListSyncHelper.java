@@ -36,7 +36,7 @@ public class TodoListSyncHelper {
 
     // Lazy interval for lazy sync requests
     private static final int LAZY_INTERVAL = 5000; // hardcoded to 5 seconds
-    
+
     // ID of the sync result notification message
     private static final int SYNC_RESULT_NOTIFICATION_ID = 1;
 
@@ -107,7 +107,7 @@ public class TodoListSyncHelper {
 
         alarmManager.cancel(syncOperation);
     }
-    
+
     /**
      * Retrieves the currently configured preferred account for syncing.
      * There is a shared preference that indicates the  preferred account. This will validate
@@ -175,50 +175,51 @@ public class TodoListSyncHelper {
      */
     public static void showSyncResultNotification(Context ctxt, RestDataProvider.SyncResult syncResult) {
 
-    	if (!syncResult.needsNotification())
-    		return;
-    	
-    	Notification notification = null;
-    	
-    	// Build a pendingIntent that displays the cloudtodolist activity
+        if (!syncResult.needsNotification())
+            return;
+
+        Notification notification = null;
+
+        // Build a pendingIntent that displays the cloudtodolist activity
         PendingIntent todoListActivityIntent =
                 PendingIntent.getActivity(
-                		ctxt, 0, new Intent(ctxt, TodoListActivity.class), 0);
+                        ctxt, 0, new Intent(ctxt, TodoListActivity.class), 0);
 
 
         // Set the latest event info, this display info regarding the very latest event being notified on
-        if (syncResult.updated()){
-        	notification = new Notification(
+        if (syncResult.updated()) {
+            notification = new Notification(
                     R.drawable.icon,
                     ctxt.getString(R.string.sync_update_ticker),
                     System.currentTimeMillis());
 
-	        notification.setLatestEventInfo(
-	        		ctxt,
-	        		ctxt.getResources().getQuantityString(R.plurals.sync_update_title,
-	                        (int) syncResult.numEntries,
-	                        (int) syncResult.numEntries),
-	                ctxt.getString(R.string.sync_update_text),
-	                todoListActivityIntent);
+            notification.setLatestEventInfo(
+                    ctxt,
+                    ctxt.getResources().getQuantityString(R.plurals.sync_update_title,
+                            (int) syncResult.numEntries,
+                            (int) syncResult.numEntries),
+                    ctxt.getString(R.string.sync_update_text),
+                    todoListActivityIntent
+            );
         } else if (syncResult.authenticationError()) {
-        	notification = new Notification(
+            notification = new Notification(
                     R.drawable.icon,
                     ctxt.getString(R.string.sync_invalid_credentials_ticker),
                     System.currentTimeMillis());
 
-        	notification.setLatestEventInfo(
-	        		ctxt,
-	        		ctxt.getString(R.string.sync_invalid_credentials_title),
-	                ctxt.getString(R.string.sync_invalid_credentials_text),
-	                todoListActivityIntent);
-        } 
-        
-        if (notification != null){
-	        notification.defaults |= Notification.DEFAULT_ALL;
-	        notification.flags |= Notification.FLAG_AUTO_CANCEL;
-	
-	        // issue the notification
-	        getNotificationManager(ctxt).notify(SYNC_RESULT_NOTIFICATION_ID, notification);
+            notification.setLatestEventInfo(
+                    ctxt,
+                    ctxt.getString(R.string.sync_invalid_credentials_title),
+                    ctxt.getString(R.string.sync_invalid_credentials_text),
+                    todoListActivityIntent);
+        }
+
+        if (notification != null) {
+            notification.defaults |= Notification.DEFAULT_ALL;
+            notification.flags |= Notification.FLAG_AUTO_CANCEL;
+
+            // issue the notification
+            getNotificationManager(ctxt).notify(SYNC_RESULT_NOTIFICATION_ID, notification);
         }
     }
 
@@ -237,34 +238,34 @@ public class TodoListSyncHelper {
         alarmManager.cancel(syncOperation);
         alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + when, syncOperation);
     }
-    
+
     /**
      * Returns a reference to the system wide ConnectivityManager
-     * 
+     *
      * @param ctxt current application context
      * @return reference to the system wide ConnectivityManager
      */
-    private static ConnectivityManager getConnectivityManager(Context ctxt){
-    	return (ConnectivityManager) ctxt.getSystemService(Context.CONNECTIVITY_SERVICE);
+    private static ConnectivityManager getConnectivityManager(Context ctxt) {
+        return (ConnectivityManager) ctxt.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
-    
+
     /**
      * Returns a reference to the system wide NotificationManager
-     * 
+     *
      * @param ctxt current application context
      * @return reference to the system wide NotificationManager
      */
-    private static NotificationManager getNotificationManager(Context ctxt){
-    	return (NotificationManager) ctxt.getSystemService(Context.NOTIFICATION_SERVICE);
+    private static NotificationManager getNotificationManager(Context ctxt) {
+        return (NotificationManager) ctxt.getSystemService(Context.NOTIFICATION_SERVICE);
     }
-    
+
     /**
      * Returns a reference to the applications SharedPreferences
-     * 
+     *
      * @param ctxt current application context
      * @return reference to the applications SharedPreferences
      */
-    private static SharedPreferences getSharedPreferences(Context ctxt){
-    	return PreferenceManager.getDefaultSharedPreferences(ctxt);
+    private static SharedPreferences getSharedPreferences(Context ctxt) {
+        return PreferenceManager.getDefaultSharedPreferences(ctxt);
     }
 }
